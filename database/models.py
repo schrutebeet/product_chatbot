@@ -1,45 +1,31 @@
 from database.connection import Base
 from sqlalchemy.dialects.postgresql import TIMESTAMP
-from sqlalchemy import String, Column, Text, DateTime, Float
-from datetime import datetime
+from sqlalchemy import String, Column, Text, Date, Float, Boolean, Integer
 
 # this Item model (table) stems from the Base class and has its properties 
 # named in an object-oriented style
 
-SCHEMA = "stocks"
+SCHEMA = "elCorteIngles"
     
-class StockIndustries(Base):
-    __tablename__ = "stock_industries"
+class Supermarket(Base):
+    __tablename__ = "supermarket"
     __table_args__ = {'schema': SCHEMA}
-    timestamp = Column(TIMESTAMP(timezone=True), nullable=False, primary_key=True)
-    symbol = Column(String, nullable=False, primary_key=True)
-    company = Column(Text)
-    industry = Column(Text)
-    marketcap = Column(String)
+    timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
+    date = Column(Date, nullable=False, primary_key=True)
+    id = Column(String, nullable=False, primary_key=True)
+    product_name = Column(Text, nullable=False)
+    category_1 = Column(Text, nullable=False)
+    category_2 = Column(Text)
+    category_3 = Column(Text)
+    category_4 = Column(Text)
+    category_5 = Column(Text)
+    brand = Column(String, nullable=False)
+    original_price = Column(Float, nullable=False)
+    final_price = Column(Float, nullable=False)
+    discount = Column(Boolean, nullable=False)
+    status = Column(String, nullable=False)
+    currency = Column(String, nullable=False)
 
-class StockInfo(Base):
-    __tablename__ = "stock_info"
-    __table_args__ = {'schema': SCHEMA}
-    timestamp = Column(TIMESTAMP(timezone=True), nullable=False, primary_key=True)
-    symbol = Column(String, nullable=False, primary_key=True)
-    name = Column(Text)
-    exchange = Column(String)
-    assettype = Column(String)
-    ipodate = Column(DateTime)
-    delistingdate = Column(DateTime)
-    status = Column(String)
-
-class StockMerge(Base):
-    __tablename__ = "stock_merged"
-    __table_args__ = {'schema': SCHEMA}
-    timestamp = Column(TIMESTAMP(timezone=True), nullable=False, primary_key=True)
-    symbol = Column(String, nullable=False, primary_key=True)
-    companyname = Column(Text)
-    exchange = Column(String)
-    status = Column(String)
-    ipodate = Column(DateTime)
-    industry = Column(Text)
-    marketcap = Column(String)
 
 def create_dynamic_model(class_name, model_name, schema_name, column_data):
     # Define the attributes for the class
