@@ -4,6 +4,7 @@ from config.log_config import logger
 import math
 
 import sqlalchemy 
+import psycopg2
 import pandas as pd
 from database.connection import engine
 from database import models
@@ -70,7 +71,7 @@ class UtilsDB:
                 objective_cls = cls
         return objective_cls
 
-    def insert_df_in_db(self, df: pd.DataFrame, model: object, batch_size: int = 100_000) -> None:
+    def insert_df_in_db(self, df: pd.DataFrame, model: object, batch_size: int = 10_000) -> None:
         """Insert the input dataframe in the corresponding model in DB.
 
         Args:
