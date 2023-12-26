@@ -1,7 +1,6 @@
 import requests
 import time
 import random
-import json
 
 class DataExtractor:
 
@@ -13,7 +12,7 @@ class DataExtractor:
         self.user_agent = {'User-agent': 'Mozilla/5.0'}
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
-    def iterate_thru_pages(self, section: str):
+    def iterate_thru_pages(self, section: str) -> dict:
         done_pages = 832
         first_product_url = self.url + "/" + section + f"/{done_pages}"
         response = requests.get(first_product_url, headers = self.user_agent)
@@ -26,6 +25,7 @@ class DataExtractor:
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
             response = requests.get(page_url, headers = self.user_agent)
+        return self.data_dict
 
     def _handle_json(self, r_json: dict, items_per_page: int):
         for item in range(items_per_page):
