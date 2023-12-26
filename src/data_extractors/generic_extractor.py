@@ -2,10 +2,12 @@ import requests
 import time
 import random
 
-class DataExtractor:
+from datetime import datetime
 
-    DICT_KEYS = ['title', 'product_name', 'coming_soon', 'eci_exclusive', 'exclusive', 'express', 'express_delivery', 'new', 'brand', 
-                 'official_price', 'current_price', 'discount_percent', 'currency', 'provider', 'link', 'image_link']
+class GenericExtractor:
+
+    DICT_KEYS = ['timestamp', 'date', 'id', 'title', 'product_name', 'coming_soon', 'eci_exclusive', 'exclusive', 'express', 'express_delivery', 
+                 'new', 'brand', 'original_price', 'final_price', 'discount_percent', 'currency', 'provider', 'link', 'image_link']
     
     def __init__(self, url: str) -> None:
         self.url = url
@@ -29,6 +31,10 @@ class DataExtractor:
 
     def _handle_json(self, r_json: dict, items_per_page: int):
         for item in range(items_per_page):
+            _time = datetime.utcnow()
+            self.data_dict['timestamp'].append(_time)
+            self.data_dict['date'].append(_time.strftime('%Y-%m-%d'))
+            self.data_dict['id'].append(r_json['data']['products'][0]['id'])
             self.data_dict['title'].append(r_json['data']['products'][0]['categories'][0]['name'])
             self.data_dict['product_name'].append(r_json['data']['products'][item]['title'])
             self.data_dict['coming_soon'].append(r_json['data']['products'][item]['badges']['coming_soon'])
@@ -38,9 +44,8 @@ class DataExtractor:
             self.data_dict['express_delivery'].append(r_json['data']['products'][item]['badges']['express_delivery'])
             self.data_dict['new'].append(r_json['data']['products'][item]['badges']['new'])
             self.data_dict['brand'].append(r_json['data']['products'][item]['brand']['name'])
-            self.data_dict['current_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('f_price'))
-            self.data_dict['official_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('o_price', self.data_dict['current_price'][-1]))
-            self.data_dict['discount_percent'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('discount_percent'))
+            self.data_dict['final_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('f_price'))
+            self.data_dict['original_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('o_price', self.data_dict['current_price'][-1]))
             self.data_dict['currency'].append(r_json['data']['paginatedDatalayer']['products'][item]['price']['currency'])
             self.data_dict['provider'].append(r_json['data']['products'][item]['provider']['name'])
             self.data_dict['link'].append(r_json['data']['products'][item]['_base_url'])
