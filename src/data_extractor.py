@@ -26,9 +26,6 @@ class DataExtractor:
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
             response = requests.get(page_url, headers = self.user_agent)
-            print('eello')
-        with open('my_dict.txt', 'w') as file:
-            json.dump(self.data_dict, file, indent=4)
 
     def _handle_json(self, r_json: dict, items_per_page: int):
         for item in range(items_per_page):
