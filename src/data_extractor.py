@@ -13,9 +13,9 @@ class DataExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self, section: str) -> dict:
-        done_pages = 832
+        done_pages = 1
         first_product_url = self.url + "/" + section + f"/{done_pages}"
-        response = requests.get(first_product_url, headers = self.user_agent)
+        response = requests.get(first_product_url, headers = self.user_agent, timeout=10)
         items_per_page = response.json()['data']['pagination']['itemsPerPage']
         time.sleep(random.randint(2, 4))
         while response.status_code == 200:
@@ -24,7 +24,7 @@ class DataExtractor:
             done_pages += 1
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
-            response = requests.get(page_url, headers = self.user_agent)
+            response = requests.get(page_url, headers = self.user_agent, timeout=10)
         return self.data_dict
 
     def _handle_json(self, r_json: dict, items_per_page: int):
