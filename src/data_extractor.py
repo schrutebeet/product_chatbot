@@ -23,7 +23,7 @@ class DataExtractor:
             r_json = response.json()
             self._handle_json(r_json, items_per_page)
             done_pages += 1
-            time.sleep(random.randint(2, 4))
+            time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
             response = requests.get(page_url, headers = self.user_agent)
             print('eello')
@@ -48,7 +48,3 @@ class DataExtractor:
             self.data_dict['provider'].append(r_json['data']['products'][item]['provider']['name'])
             self.data_dict['link'].append(r_json['data']['products'][item]['_base_url'])
             self.data_dict['image_link'].append(r_json['data']['products'][item]['image']['default_source'])
-
-
-
-DataExtractor("https://www.elcorteingles.es/api/firefly/vuestore/products_list/").iterate_thru_pages("perfumeria")
