@@ -1,1 +1,1 @@
-# product_chatbot
+# supermaket data extractor
