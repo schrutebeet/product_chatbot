@@ -164,3 +164,6 @@ keys/
 
 # Virtual environment
 super_venv/
+
+# Debugger / VSCode files
+.vscode/
