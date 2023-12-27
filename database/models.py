@@ -9,7 +9,7 @@ from database.connection import Base
 SCHEMA = "elCorteIngles"
 
 
-class Supermarket(Base):
+class ECISupermarket(Base):
     __tablename__ = "supermarket"
     __table_args__ = {"schema": SCHEMA}
     timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
