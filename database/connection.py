@@ -1,14 +1,17 @@
+from sqlalchemy import MetaData, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-from sqlalchemy import create_engine, MetaData
+
 from dependencies.authenticator import Settings
 
 # create object for DB settings
 settings = Settings()
 # used to construct the database connection URL
-__DATABASE_URL = f"postgresql://{settings.POSTGRES_USER}:"\
-                              f"{settings.POSTGRES_PASSWORD}@"\
-                              f"{settings.POSTGRES_HOST}/"\
-                              f"{settings.POSTGRES_DATABASE}"
+__DATABASE_URL = (
+    f"postgresql://{settings.POSTGRES_USER}:"
+    f"{settings.POSTGRES_PASSWORD}@"
+    f"{settings.POSTGRES_HOST}/"
+    f"{settings.POSTGRES_DATABASE}"
+)
 
 # used to create a database engine
 # the engine manages the database connection.
@@ -23,5 +26,3 @@ metadata = MetaData()
 
 # used to manage database sessions for your application
 SessionLocal = sessionmaker(bind=engine)
-
-

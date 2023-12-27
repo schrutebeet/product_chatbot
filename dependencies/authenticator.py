@@ -1,17 +1,20 @@
 import sys
-import yaml
 from pathlib import Path
+
+import yaml
 
 import src
 
 key_dir = Path(src.__file__).parent.parent / "keys"
 sys.path.append(str(key_dir))
 
-import mail_key 
+import mail_key
+
 mail_key = mail_key
 
-with open(key_dir / "postgres_keys.yaml", 'r') as f:
-            credentials = yaml.safe_load(f)
+with open(key_dir / "postgres_keys.yaml", "r") as f:
+    credentials = yaml.safe_load(f)
+
 
 class Settings:
     PROJECT_NAME: str = "Stocks"
