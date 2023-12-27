@@ -84,7 +84,10 @@ class UtilsDB:
         for df_ in batched_dfs:
             # argument "orient='records'" especifies the dictionary should be made row-wise
             dictionary_rows = df_.to_dict(orient='records')
-            self.dbsession.bulk_insert_mappings(model, dictionary_rows)
+            try:
+                self.dbsession.bulk_insert_mappings(model, dictionary_rows)
+            except Exception as e:
+                logger.error(f"An error occurred when inserting data into database: {e}.")
         # Commit the changes to the database for each model
         self.dbsession.commit()
         logger.info(f"Table '{model.__tablename__}' has been successfully stored in DB.")
