@@ -50,7 +50,7 @@ class ECIGenericExtractor:
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
             response = requests.get(page_url, headers=self.user_agent, timeout=10)
-        logger.info('Finished data fetching for ECI\'s "{section}" section.')
+        logger.info(f'Finished data fetching for ECI\'s "{section}" section.')
         logger.info(f"Pages scraped: {done_pages - 1}.")
         return self.data_dict
 
