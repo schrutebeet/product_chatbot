@@ -7,7 +7,7 @@ import requests
 from config.log_config import logger
 
 
-class GenericExtractor:
+class ECIGenericExtractor:
     DICT_KEYS = [
         "timestamp",
         "date",

@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from config.log_config import logger
 
 
-class SupermarketExtractor:
+class ECISupermarketExtractor:
     DICT_KEYS = [
         "timestamp",
         "date",
