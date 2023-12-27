@@ -7,6 +7,8 @@ from typing import List
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+from config.log_config import logger
+
 class SupermarketExtractor:
 
     DICT_KEYS = ['timestamp', 'date', 'id', 'product_name', 'category_1', 'category_2', 'category_3', 'category_4', 'category_5',
@@ -20,15 +22,18 @@ class SupermarketExtractor:
     def iterate_thru_pages(self) -> dict:
         done_pages = 1200
         keep_loop = True
+        logger.info("Started data fetching for ECI's supermarket.")
         while keep_loop:
             product_url = self.url + f"/{done_pages}"
             response = requests.get(product_url, headers = self.user_agent)
             soup = BeautifulSoup(response.content, 'html.parser')
             products_list = json.loads(soup.find('div')["data-json"])['products']
             keep_loop = self._iterate_thru_product_list(products_list)
-            print(f"Saving page {done_pages}")
+            logger.debug(f"Stored information on page {done_pages}.")
             done_pages += 1
             time.sleep(random.randint(1, 3))
+        logger.info("Finished data fetching for ECI's supermarket.")
+        logger.info(f"Pages scraped: {done_pages - 1}.")
         return self.data_dict
 
     def _iterate_thru_product_list(self, product_list: List[dict]) -> bool:
