@@ -19,12 +19,12 @@ class Supermarket(Base):
     category_3 = Column(Text)
     category_4 = Column(Text)
     category_5 = Column(Text)
-    brand = Column(String, nullable=False)
-    original_price = Column(Float, nullable=False)
-    final_price = Column(Float, nullable=False)
-    discount = Column(Boolean, nullable=False)
-    status = Column(String, nullable=False)
-    currency = Column(String, nullable=False)
+    brand = Column(String)
+    original_price = Column(Float)
+    final_price = Column(Float)
+    discount = Column(Boolean)
+    status = Column(String)
+    currency = Column(String)
 
 
 def create_dynamic_model(class_name, model_name, schema_name, column_data):
