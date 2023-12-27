@@ -4,6 +4,8 @@ import random
 
 from datetime import datetime
 
+from config.log_config import logger
+
 class GenericExtractor:
 
     DICT_KEYS = ['timestamp', 'date', 'id', 'title', 'product_name', 'coming_soon', 'eci_exclusive', 'exclusive', 'express', 'express_delivery', 
@@ -20,13 +22,17 @@ class GenericExtractor:
         response = requests.get(first_product_url, headers = self.user_agent, timeout=10)
         items_per_page = response.json()['data']['pagination']['itemsPerPage']
         time.sleep(random.randint(2, 4))
+        logger.info(f"Started data fetching for ECI's \"{section}\" section.")
         while response.status_code == 200:
             r_json = response.json()
             self._handle_json(r_json, items_per_page)
+            logger.debug(f"Stored information from page {done_pages}.")
             done_pages += 1
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
             response = requests.get(page_url, headers = self.user_agent, timeout=10)
+        logger.info("Finished data fetching for ECI's \"{section}\" section.")
+        logger.info(f"Pages scraped: {done_pages - 1}.")
         return self.data_dict
 
     def _handle_json(self, r_json: dict, items_per_page: int):
@@ -45,7 +51,7 @@ class GenericExtractor:
             self.data_dict['new'].append(r_json['data']['products'][item]['badges']['new'])
             self.data_dict['brand'].append(r_json['data']['products'][item]['brand']['name'])
             self.data_dict['final_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('f_price'))
-            self.data_dict['original_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('o_price', self.data_dict['current_price'][-1]))
+            self.data_dict['original_price'].append(r_json['data']['paginatedDatalayer']['products'][item]['price'].get('o_price', self.data_dict['final_price'][-1]))
             self.data_dict['currency'].append(r_json['data']['paginatedDatalayer']['products'][item]['price']['currency'])
             self.data_dict['provider'].append(r_json['data']['products'][item]['provider']['name'])
             self.data_dict['link'].append(r_json['data']['products'][item]['_base_url'])
