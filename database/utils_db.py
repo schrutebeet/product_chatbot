@@ -80,23 +80,22 @@ class UtilsDB:
                 objective_cls = cls
         return objective_cls
 
-    def insert_df_in_db(
-        self, df: pd.DataFrame, model: object, batch_size: int = 10_000
+    def insert_dict_in_db(
+        self, data_dict: dict, model: object, batch_size: int = 10_000
     ) -> None:
         """Insert the input dataframe in the corresponding model in DB.
 
         Args:
-            df (pd.DataFrame): Input dataframe of which its information will be stored in the DB.
+            data_dict (dict): Input dictionary of which its information will be stored in the DB.
             model (object): Model class with table characteristics.
             batch_size (int, optional): Maximum rows to be inserted into the DB per iteration. Defaults to 100_000.
         """
-        batched_dfs = self._divide_df_in_batches(df, batch_size)
+        list_of_dicts = [dict(zip(data_dict, t)) for t in zip(*data_dict.values())]
+        batched_list_of_dicts = self._divide_dict_in_batches(list_of_dicts, batch_size)
         logger.info(f"Starting data storage in DB for table '{model.__tablename__}'.")
-        for df_ in batched_dfs:
-            # argument "orient='records'" especifies the dictionary should be made row-wise
-            dictionary_rows = df_.to_dict(orient="records")
+        for dict_batch in batched_list_of_dicts:
             try:
-                self.dbsession.bulk_insert_mappings(model, dictionary_rows)
+                self.dbsession.bulk_insert_mappings(model, list_of_dicts)
             except Exception as e:
                 logger.error(
                     f"An error occurred when inserting data into database: {e}."
@@ -110,16 +109,16 @@ class UtilsDB:
         self.dbsession.close()
 
     @staticmethod
-    def _divide_df_in_batches(
-        input_df: pd.DataFrame, batch_size: int
-    ) -> List[pd.DataFrame]:
-        """Divide dataframe in smaller pieces for speed improvement."""
-        n_chunks = math.ceil(len(input_df) / batch_size)
-        batched_df = []
+    def _divide_dict_in_batches(
+        input_dict: dict, batch_size: int
+    ) -> List[List[dict]]:
+        """Divide dictionary in smaller pieces for speed improvement."""
+        n_chunks = math.ceil(len(input_dict) / batch_size)
+        batched_list_of_dicts = []
         starting_row, ending_row = 0, batch_size
         for n in range(n_chunks):
-            chunked_df = input_df.iloc[starting_row:ending_row,]
-            batched_df.append(chunked_df)
+            chunked_dict_list = input_dict[starting_row: ending_row]
+            batched_list_of_dicts.append(chunked_dict_list)
             starting_row += batch_size
             ending_row += batch_size
-        return batched_df
+        return batched_list_of_dicts
