@@ -8,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from config.log_config import logger
+from utils.headers import headers
 
 
 class ECISupermarketExtractor:
@@ -31,7 +32,6 @@ class ECISupermarketExtractor:
 
     def __init__(self, url: str) -> None:
         self.url = url
-        self.user_agent = {"User-agent": "Mozilla/5.0"}
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self) -> dict:
@@ -40,7 +40,7 @@ class ECISupermarketExtractor:
         logger.info("Started data fetching for ECI's supermarket.")
         while keep_loop:
             product_url = self.url + f"/{done_pages}"
-            response = requests.get(product_url, headers=self.user_agent)
+            response = requests.get(product_url, headers=random.choice(headers), timeout=15)
             soup = BeautifulSoup(response.content, "html.parser")
             products_list = json.loads(soup.find("div")["data-json"])["products"]
             keep_loop = self._iterate_thru_product_list(products_list)

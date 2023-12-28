@@ -5,6 +5,7 @@ from datetime import datetime
 import requests
 
 from config.log_config import logger
+from utils.headers import headers
 
 
 class ECIGenericExtractor:
@@ -32,13 +33,12 @@ class ECIGenericExtractor:
 
     def __init__(self, url: str) -> None:
         self.url = url
-        self.user_agent = {"User-agent": "Mozilla/5.0"}
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self, section: str) -> dict:
         done_pages = 1
         first_product_url = self.url + "/" + section + f"/{done_pages}"
-        response = requests.get(first_product_url, headers=self.user_agent, timeout=10)
+        response = requests.get(first_product_url, headers=random.choice(headers), timeout=10)
         items_per_page = response.json()["data"]["pagination"]["itemsPerPage"]
         time.sleep(random.randint(2, 4))
         logger.info(f'Started data fetching for ECI\'s "{section}" section.')
@@ -49,7 +49,7 @@ class ECIGenericExtractor:
             done_pages += 1
             time.sleep(random.randint(1, 3))
             page_url = self.url + "/" + section + f"/{done_pages}"
-            response = requests.get(page_url, headers=self.user_agent, timeout=10)
+            response = requests.get(page_url, headers=random.choice(headers), timeout=10)
         logger.info(f'Finished data fetching for ECI\'s "{section}" section.')
         logger.info(f"Pages scraped: {done_pages - 1}.")
         return self.data_dict
