@@ -40,7 +40,7 @@ class Mercadona(Base):
     unit_price = Column(Float)
     unit_size = Column(Float)
     size_format = Column(String)
-    iva = Column(Float)
+    iva = Column(Integer)
     reference_price = Column(Float)
     reference_unit = Column(String)
     total_units = Column(Integer)
