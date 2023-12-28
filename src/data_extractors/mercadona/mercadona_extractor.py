@@ -3,7 +3,6 @@ import time
 import random
 from datetime import datetime
 
-from pprint import pprint
 
 class MercadonaExtractor:
     DICT_KEYS = [
@@ -19,9 +18,9 @@ class MercadonaExtractor:
             "unit_size",    # number of L, kg... for each unit of item
             "size_format",   # unit in which the "unit_size" is expressed (L, kg...)
             "iva",  # % VAT of the product
-            "reference_price",  # price of the reference size (e.g., 10€/1L)
+            "reference_price",  # price of the reference size (e.g., the 10 in 10€/1L)
             "reference_unit",   # reference unit for "reference_price" i.e., the "L" in "10€/1L"
-            "total_units",  # units unside the item
+            "total_units",  # units inside the item
             "is_new",
             "is_pack",
             "packaging",
@@ -50,7 +49,6 @@ class MercadonaExtractor:
     def iterate_thru_categories(self) -> dict:
         self.detect_categories()
         for key, value in self.master_categories.items():
-            print(value)
             url_product_page = self.url + key
             response = requests.get(url_product_page)
             r_json = response.json()['categories']
@@ -81,5 +79,3 @@ class MercadonaExtractor:
             time.sleep(random.randint(2, 4))
         return self.data_dict
 
-
-MercadonaExtractor("https://tienda.mercadona.es/api/categories/").iterate_thru_categories()
