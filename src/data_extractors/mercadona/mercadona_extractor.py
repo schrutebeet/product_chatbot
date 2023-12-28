@@ -3,6 +3,8 @@ import time
 import random
 from datetime import datetime
 
+from config.log_config import logger
+
 
 class MercadonaExtractor:
     DICT_KEYS = [
@@ -48,11 +50,15 @@ class MercadonaExtractor:
 
     def iterate_thru_categories(self) -> dict:
         self.detect_categories()
+        sections_fetched = 0
+        total_sections = len(self.master_categories.keys())
+        logger.info('Started data fetching all Mercadona\'s sections and sub-section.')
         for key, value in self.master_categories.items():
+            logger.debug(f'Started data fetching for Mercadona\'s "{value}" sub-section. ({sections_fetched*100/total_sections:.2f}% extracted)')
             url_product_page = self.url + key
             response = requests.get(url_product_page)
             r_json = response.json()['categories']
-            for sub_sub_cat in r_json:
+            for sub_sub_cat in r_json:  
                 category_3 = sub_sub_cat['name']
                 for product in sub_sub_cat['products']:
                     _time = datetime.utcnow()
@@ -76,6 +82,8 @@ class MercadonaExtractor:
                     self.data_dict['packaging'].append(product['packaging'])
                     self.data_dict['link'].append(product['share_url'])
                     self.data_dict['image_link'].append(product['thumbnail'])
+            sections_fetched += 1
             time.sleep(random.randint(2, 4))
+        logger.info('Finished data fetching all Mercadona\'s sections and sub-section.')
         return self.data_dict
 
