@@ -35,7 +35,7 @@ class ECISupermarketExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self) -> dict:
-        done_pages = 1000
+        done_pages = 1
         keep_loop = True
         logger.info("Started data fetching for ECI's supermarket.")
         while keep_loop:
