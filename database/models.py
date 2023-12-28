@@ -6,12 +6,10 @@ from database.connection import Base
 # this Item model (table) stems from the Base class and has its properties
 # named in an object-oriented style
 
-SCHEMA = "elCorteIngles"
-
 
 class ECISupermarket(Base):
-    __tablename__ = "supermarket"
-    __table_args__ = {"schema": SCHEMA}
+    __tablename__ = "ECIsupermarket"
+    __table_args__ = {"schema": "elCorteIngles"}
     timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
     date = Column(Date, nullable=False, primary_key=True)
     id = Column(String, nullable=False, primary_key=True)
@@ -27,6 +25,30 @@ class ECISupermarket(Base):
     discount = Column(Boolean)
     status = Column(String)
     currency = Column(String)
+
+class Mercadona(Base):
+    __tablename__ = "mercadona"
+    __table_args__ = {"schema": "Mercadona"}
+    timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
+    date = Column(Date, nullable=False, primary_key=True)
+    id = Column(String, nullable=False, primary_key=True)
+    product_name = Column(Text, nullable=False)
+    category_1 = Column(Text, nullable=False, primary_key=True)
+    category_2 = Column(Text, primary_key=True)
+    category_3 = Column(Text, primary_key=True)
+    previous_unit_price = Column(Float)
+    unit_price = Column(Float)
+    unit_size = Column(Float)
+    size_format = Column(String)
+    iva = Column(Float)
+    reference_price = Column(Float)
+    reference_unit = Column(String)
+    total_units = Column(Integer)
+    is_new = Column(Boolean)
+    is_pack = Column(Boolean)
+    packaging = Column(String)
+    link = Column(String)
+    image_link = Column(String)
 
 
 def create_dynamic_model(class_name, model_name, schema_name, column_data):
