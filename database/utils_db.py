@@ -95,7 +95,7 @@ class UtilsDB:
         logger.info(f"Starting data storage in DB for table '{model.__tablename__}'.")
         for dict_batch in batched_list_of_dicts:
             try:
-                self.dbsession.bulk_insert_mappings(model, list_of_dicts)
+                self.dbsession.bulk_insert_mappings(model, dict_batch)
             except Exception as e:
                 logger.error(
                     f"An error occurred when inserting data into database: {e}."
