@@ -18,7 +18,6 @@ class ECISupermarket(Base):
     category_2 = Column(Text, primary_key=True)
     category_3 = Column(Text, primary_key=True)
     category_4 = Column(Text, primary_key=True)
-    category_5 = Column(Text, primary_key=True)
     brand = Column(String)
     original_price = Column(Float)
     final_price = Column(Float)
