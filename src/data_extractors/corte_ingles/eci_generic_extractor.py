@@ -36,7 +36,7 @@ class ECIGenericExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self, section: str) -> dict:
-        done_pages = 827
+        done_pages = 1
         first_product_url = self.url + "/" + section + f"/{done_pages}"
         response = requests.get(first_product_url, headers=random.choice(headers), timeout=10)
         items_per_page = response.json()["data"]["pagination"]["itemsPerPage"]
