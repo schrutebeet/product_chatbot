@@ -96,15 +96,19 @@ class UtilsDB:
         for dict_batch in batched_list_of_dicts:
             try:
                 self.dbsession.bulk_insert_mappings(model, dict_batch)
+                # Commit the changes to the database for each model
+                self.dbsession.commit()
+                logger.info(
+                    f"Table '{model.__tablename__}' has been successfully stored in DB."
+                )
+            except sqlalchemy.exc.IntegrityError as e:
+                logger.warning(
+                    f"Duplicated primary key entries. Skipping. Error log: \n {e}"
+                )
             except Exception as e:
                 logger.error(
                     f"An error occurred when inserting data into database: {e}."
                 )
-        # Commit the changes to the database for each model
-        self.dbsession.commit()
-        logger.info(
-            f"Table '{model.__tablename__}' has been successfully stored in DB."
-        )
         # Close connection
         self.dbsession.close()
 
