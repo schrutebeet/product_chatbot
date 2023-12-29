@@ -21,7 +21,6 @@ class ECISupermarketExtractor:
         "category_2",
         "category_3",
         "category_4",
-        "category_5",
         "brand",
         "original_price",
         "final_price",
@@ -65,10 +64,10 @@ class ECISupermarketExtractor:
                 self.data_dict["discount"].append(product.get("discount"))
                 self.data_dict["status"].append(product.get("status"))
                 self.data_dict["currency"].append(product.get("currency"))
-                product["category"] = self.ensure_five_elements(product.get("category"))
+                product["category"] = self.ensure_four_elements(product.get("category"))
                 if product["category"]:
                     category_count = 1
-                    for n in range(5):
+                    for n in range(4):
                         self.data_dict[f"category_{str(category_count)}"].append(product["category"][n])
                         category_count += 1
                     keep_loop = True
@@ -77,8 +76,8 @@ class ECISupermarketExtractor:
         return keep_loop
 
     @staticmethod
-    def ensure_five_elements(list_: list):
-        additional_elements = 5 - len(list_)
+    def ensure_four_elements(list_: list):
+        additional_elements = 4 - len(list_)
         if additional_elements > 0:
             list_.extend([None] * additional_elements)
         return list_
