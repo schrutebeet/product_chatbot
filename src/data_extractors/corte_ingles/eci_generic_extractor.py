@@ -36,7 +36,7 @@ class ECIGenericExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def iterate_thru_pages(self, section: str) -> dict:
-        done_pages = 1
+        done_pages = 827
         first_product_url = self.url + "/" + section + f"/{done_pages}"
         response = requests.get(first_product_url, headers=random.choice(headers), timeout=10)
         items_per_page = response.json()["data"]["pagination"]["itemsPerPage"]
@@ -59,8 +59,8 @@ class ECIGenericExtractor:
             _time = datetime.utcnow()
             self.data_dict["timestamp"].append(_time)
             self.data_dict["date"].append(_time.strftime("%Y-%m-%d"))
-            self.data_dict["id"].append(r_json["data"]["products"][0]["id"])
-            self.data_dict["title"].append(r_json["data"]["products"][0]["categories"][0]["name"])
+            self.data_dict["id"].append(r_json["data"]["products"][item]["id"])
+            self.data_dict["title"].append(r_json["data"]["products"][item]["categories"][0]["name"])
             self.data_dict["product_name"].append(r_json["data"]["products"][item]["title"])
             self.data_dict["coming_soon"].append(r_json["data"]["products"][item]["badges"]["coming_soon"])
             self.data_dict["eci_exclusive"].append(r_json["data"]["products"][item]["badges"]["eci_exclusive"])
@@ -71,6 +71,7 @@ class ECIGenericExtractor:
             self.data_dict["brand"].append(r_json["data"]["products"][item]["brand"]["name"])
             self.data_dict["final_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("f_price"))
             self.data_dict["original_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("o_price", self.data_dict["final_price"][-1]))
+            self.data_dict["discount_percent"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"]["discount_percent"])
             self.data_dict["currency"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"]["currency"])
             self.data_dict["provider"].append(r_json["data"]["products"][item]["provider"]["name"])
             self.data_dict["link"].append(r_json["data"]["products"][item]["_base_url"])
