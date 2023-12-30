@@ -34,6 +34,17 @@ class ECIGenericExtractor:
     def __init__(self, url: str) -> None:
         self.url = url
         self.data_dict = {key: [] for key in self.DICT_KEYS}
+        self.categories = self.find_categories()
+        self.categories_underscore = [category.replace("-", "_") for category in self.categories]
+
+    def find_categories(self) -> list:
+        list_categories = []
+        response = requests.get(self.url, headers=random.choice(headers), timeout=10)
+        r_json = response.json()
+        categories = r_json['data']['filters']['_menubar'][0]['values']
+        for category in categories:
+            list_categories.append(category['slugs'][0])
+        return list_categories
 
     def iterate_thru_pages(self, section: str) -> dict:
         done_pages = 1
