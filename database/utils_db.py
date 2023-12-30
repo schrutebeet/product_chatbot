@@ -1,6 +1,7 @@
 import inspect
 import math
 from typing import Any, List, Union
+from itertools import compress
 
 import pandas as pd
 import psycopg2
@@ -90,6 +91,8 @@ class UtilsDB:
             model (object): Model class with table characteristics.
             batch_size (int, optional): Maximum rows to be inserted into the DB per iteration. Defaults to 100_000.
         """
+        # Remove duplicates
+        data_dict = self.remove_duplicate_ids(data_dict)
         list_of_dicts = [dict(zip(data_dict, t)) for t in zip(*data_dict.values())]
         batched_list_of_dicts = self._divide_dict_in_batches(list_of_dicts, batch_size)
         logger.info(f"Starting data storage in DB for table '{model.__tablename__}'.")
@@ -111,6 +114,37 @@ class UtilsDB:
                 )
         # Close connection
         self.dbsession.close()
+
+    def remove_duplicate_ids(self, data_dict: dict) -> dict:
+        # First, check if all values in the dictionary are of the same length
+        len_keys = []
+        for k, v in data_dict.items():
+            len_key = len(v)
+            len_keys.append(len_key)
+
+        # Create an error log if size is not the same across elements in the list
+        is_same = True
+        for length in len_keys:
+            if len_keys[0] != length:
+                is_same = False
+                break
+        
+        if is_same:
+            logger.info(f"All values in the keys of the dictionary are of the same size: {len_keys[0]}")
+            # Create mask so that the dict only contains unique ID's
+            mask_list = []
+            for idx, identifier in enumerate(data_dict['id']):
+                if identifier not in data_dict['id'][:idx]:
+                    mask_list.append(True)
+                else:
+                    mask_list.append(False)
+
+            # Add unique entries in dictionary
+            for k, v in data_dict.items():
+                data_dict[k] = list(compress(v, mask_list))
+        else:
+            logger.error(f"Not all values in the keys of the dictionary are of the same size")
+        return data_dict
 
     @staticmethod
     def _divide_dict_in_batches(
