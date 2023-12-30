@@ -79,7 +79,7 @@ class ECIGenericExtractor:
             self.data_dict["express"].append(r_json["data"]["products"][item]["badges"]["express"])
             self.data_dict["express_delivery"].append(r_json["data"]["products"][item]["badges"]["express_delivery"])
             self.data_dict["new"].append(r_json["data"]["products"][item]["badges"]["new"])
-            self.data_dict["brand"].append(r_json["data"]["products"][item]["brand"]["name"])
+            self.data_dict["brand"].append(r_json["data"]["products"][item]["brand"].get("name"))
             self.data_dict["final_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("f_price"))
             self.data_dict["original_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("o_price", self.data_dict["final_price"][-1]))
             self.data_dict["discount_percent"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"]["discount_percent"])
