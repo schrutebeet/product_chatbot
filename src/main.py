@@ -1,5 +1,3 @@
-import pandas as pd
-
 from database.models import ECISupermarket, Mercadona
 from database.utils_db import UtilsDB
 from src.data_extractors.corte_ingles.eci_generic_extractor import ECIGenericExtractor
@@ -9,15 +7,21 @@ from utils.default_columns import default_cols
 
 
 def main():
-    # data_extractor = ECIGenericExtractor("https://www.elcorteingles.es/api/firefly/vuestore/products_list/")
-    eci_supermarket = ECISupermarketExtractor("https://www.elcorteingles.es/alimentacion/api/catalog/get-page/supermercado")
-    eci_supermarket = eci_supermarket.iterate_thru_pages()
+    data_extractor = ECIGenericExtractor("https://www.elcorteingles.es/api/firefly/vuestore/products_list/")
+    moda_mujer = data_extractor.iterate_thru_pages('moda-mujer')
+
+    # eci_supermarket = ECISupermarketExtractor("https://www.elcorteingles.es/alimentacion/api/catalog/get-page/supermercado")
+    # eci_supermarket = eci_supermarket.iterate_thru_pages()
+
     # mercadona_supermarket = MercadonaExtractor("https://tienda.mercadona.es/api/categories/")
     # mercadona_supermarket = mercadona_supermarket.iterate_thru_categories()
+
     db_utils = UtilsDB()
     db_utils.create_new_models()
-    db_utils.insert_dict_in_db(eci_supermarket, ECISupermarket)
+    # db_utils.insert_dict_in_db(eci_supermarket, ECISupermarket)
     # db_utils.insert_dict_in_db(mercadona_supermarket, Mercadona)
+    ModaMujer = db_utils.create_specific_model('ModaMujer', 'moda_mujer', 'elCorteIngles', default_cols)
+    db_utils.insert_dict_in_db(moda_mujer, ModaMujer)
 
 # CONSUM
 # https://tienda.consum.es/api/rest/V1.0/shopping/category/menu
