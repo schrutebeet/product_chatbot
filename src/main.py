@@ -1,3 +1,5 @@
+import copy
+
 from database.models import ECISupermarket, Mercadona
 from database.utils_db import UtilsDB
 from src.data_extractors.corte_ingles.eci_generic_extractor import ECIGenericExtractor
@@ -11,8 +13,9 @@ def main():
     db_utils.create_new_models()
     data_extractor = ECIGenericExtractor("https://www.elcorteingles.es/api/firefly/vuestore/products_list/")
     for category in data_extractor.categories:
+        category_dict = {}
         category_dict = data_extractor.iterate_thru_pages(category)
-        category_model = db_utils.create_specific_model(category, category, 'elCorteIngles', default_cols)
+        category_model = db_utils.create_specific_model(category, category.replace("-", "_"), 'elCorteIngles', copy.deepcopy(default_cols))
         db_utils.insert_dict_in_db(category_dict, category_model)
 
 
