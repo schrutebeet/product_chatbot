@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Scraping Report</title>
+</head>
+<body>
+    <div style="font-family: Arial, sans-serif; margin: 20px;">
+        <h1>El Corte Ingl&eacute;s Scraping Report</h1>
+        <p>Dear {recipient_name},</p>
+
+        <p>We are pleased to provide you with the following information about our web scraping process:</p>
+
+        <ul>
+            <li>Category of Products: <b><i>{product_category}</i></b></li>
+            <li>Number of Rows Added to the Database: {row_count}</li>
+            <!-- You can add more parameters/variables here as needed -->
+        </ul>
+
+        <p>This information represents the results of our recent web scraping activity for the "<b><i>{product_category}</i></b>" category. We have successfully collected and added {row_count} new records to our database.</p>
+
+        <p>If you have any questions or require further details, please do not hesitate to contact us.</p>
+
+        <p>Thank you for your attention.</p>
+
+        <p>Sincerely,</p>
+        <p>Ricardo</p>
+    </div>
+</body>
+</html>
