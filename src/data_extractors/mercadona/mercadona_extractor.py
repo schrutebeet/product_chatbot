@@ -37,7 +37,7 @@ class MercadonaExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def detect_categories(self) -> dict:
-        response = requests.get(self.url, headers=random.choice(headers), timeout=25)
+        response = requests.get(self.url, headers=random.choice(headers))
         r_json = response.json()['results']
         for item in r_json:
             self._iterate_over_main_categories(item)
@@ -56,7 +56,7 @@ class MercadonaExtractor:
         for key, value in self.master_categories.items():
             logger.debug(f'Started data fetching for Mercadona\'s "{value}" sub-section. ({sections_fetched*100/total_sections:.2f}% extracted)')
             url_product_page = self.url + key
-            response = requests.get(url_product_page, headers=random.choice(headers), timeout=25)
+            response = requests.get(url_product_page, headers=random.choice(headers))
             r_json = response.json()['categories']
             for sub_sub_cat in r_json:  
                 category_3 = sub_sub_cat['name']
