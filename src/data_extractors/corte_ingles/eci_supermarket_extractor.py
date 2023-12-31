@@ -39,7 +39,7 @@ class ECISupermarketExtractor:
         logger.info("Started data fetching for ECI's supermarket.")
         while keep_loop:
             product_url = self.url + f"/{done_pages}"
-            response = requests.get(product_url, headers=random.choice(headers), timeout=25)
+            response = requests.get(product_url, headers=random.choice(headers))
             soup = BeautifulSoup(response.content, "html.parser")
             products_list = json.loads(soup.find("div")["data-json"])["products"]
             keep_loop = self._iterate_thru_product_list(products_list)
