@@ -33,13 +33,12 @@ class ECIGenericExtractor:
 
     def __init__(self, url: str) -> None:
         self.url = url
-        self.data_dict = {key: [] for key in self.DICT_KEYS}
         self.categories = self.find_categories()
         self.categories_underscore = [category.replace("-", "_") for category in self.categories]
 
     def find_categories(self) -> list:
         list_categories = []
-        response = requests.get(self.url, headers=random.choice(headers), timeout=25)
+        response = requests.get(self.url, headers=random.choice(headers))
         r_json = response.json()
         categories = r_json['data']['filters']['_menubar'][0]['values']
         for category in categories:
@@ -47,43 +46,48 @@ class ECIGenericExtractor:
         return list_categories
 
     def iterate_thru_pages(self, section: str) -> dict:
+        info_dict = {key: [] for key in self.DICT_KEYS}
         done_pages = 1
         first_product_url = self.url + "/" + section + f"/{done_pages}"
-        response = requests.get(first_product_url, headers=random.choice(headers), timeout=25)
+        response = requests.get(first_product_url, headers=random.choice(headers))
         items_per_page = response.json()["data"]["pagination"]["itemsPerPage"]
         time.sleep(random.randint(2, 4))
         logger.info(f'Started data fetching for ECI\'s "{section}" section.')
         while response.status_code == 200:
             r_json = response.json()
-            self._handle_json(r_json, items_per_page)
+            are_products = r_json["data"]["products"]
+            if not are_products:
+                break
+            self._handle_json(r_json, info_dict, items_per_page)
             logger.debug(f"Stored information from page {done_pages}.")
             done_pages += 1
-            time.sleep(random.randint(1, 3))
+            time.sleep(random.randint(1, 2))
             page_url = self.url + "/" + section + f"/{done_pages}"
-            response = requests.get(page_url, headers=random.choice(headers), timeout=25)
+            response = requests.get(page_url, headers=random.choice(headers))
         logger.info(f'Finished data fetching for ECI\'s "{section}" section.')
         logger.info(f"Pages scraped: {done_pages - 1}.")
-        return self.data_dict
+        return info_dict
 
-    def _handle_json(self, r_json: dict, items_per_page: int):
+    def _handle_json(self, r_json: dict, info_dict: dict, items_per_page: int) -> dict:
         for item in range(items_per_page):
             _time = datetime.utcnow()
-            self.data_dict["timestamp"].append(_time)
-            self.data_dict["date"].append(_time.strftime("%Y-%m-%d"))
-            self.data_dict["id"].append(r_json["data"]["products"][item]["id"])
-            self.data_dict["title"].append(r_json["data"]["products"][item]["categories"][0]["name"])
-            self.data_dict["product_name"].append(r_json["data"]["products"][item].get("title"))
-            self.data_dict["coming_soon"].append(r_json["data"]["products"][item]["badges"].get("coming_soon"))
-            self.data_dict["eci_exclusive"].append(r_json["data"]["products"][item]["badges"].get("eci_exclusive"))
-            self.data_dict["exclusive"].append(r_json["data"]["products"][item]["badges"].get("exclusive"))
-            self.data_dict["express"].append(r_json["data"]["products"][item]["badges"].get("express"))
-            self.data_dict["express_delivery"].append(r_json["data"]["products"][item]["badges"].get("express_delivery"))
-            self.data_dict["new"].append(r_json["data"]["products"][item]["badges"].get("new"))
-            self.data_dict["brand"].append(r_json["data"]["products"][item].get("brand", {}).get("name"))
-            self.data_dict["final_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("f_price"))
-            self.data_dict["original_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("o_price", self.data_dict["final_price"][-1]))
-            self.data_dict["discount_percent"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("discount_percent"))
-            self.data_dict["currency"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("currency"))
-            self.data_dict["provider"].append(r_json["data"]["products"][item]["provider"].get("name"))
-            self.data_dict["link"].append(r_json["data"]["products"][item].get("_base_url"))
-            self.data_dict["image_link"].append(r_json["data"]["products"][item]["image"].get("default_source"))
+            if r_json["data"]["products"]:
+                info_dict["timestamp"].append(_time)
+                info_dict["date"].append(_time.strftime("%Y-%m-%d"))
+                info_dict["id"].append(r_json["data"]["products"][item]["id"])
+                info_dict["title"].append(r_json["data"]["products"][item]["categories"][0]["name"])
+                info_dict["product_name"].append(r_json["data"]["products"][item].get("title"))
+                info_dict["coming_soon"].append(r_json["data"]["products"][item]["badges"].get("coming_soon"))
+                info_dict["eci_exclusive"].append(r_json["data"]["products"][item]["badges"].get("eci_exclusive"))
+                info_dict["exclusive"].append(r_json["data"]["products"][item]["badges"].get("exclusive"))
+                info_dict["express"].append(r_json["data"]["products"][item]["badges"].get("express"))
+                info_dict["express_delivery"].append(r_json["data"]["products"][item]["badges"].get("express_delivery"))
+                info_dict["new"].append(r_json["data"]["products"][item]["badges"].get("new"))
+                info_dict["brand"].append(r_json["data"]["products"][item].get("brand", {}).get("name"))
+                info_dict["final_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("f_price"))
+                info_dict["original_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("o_price", info_dict["final_price"][-1]))
+                info_dict["discount_percent"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("discount_percent"))
+                info_dict["currency"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("currency"))
+                info_dict["provider"].append(r_json["data"]["products"][item]["provider"].get("name"))
+                info_dict["link"].append(r_json["data"]["products"][item].get("_base_url"))
+                info_dict["image_link"].append(r_json["data"]["products"][item]["image"].get("default_source"))
