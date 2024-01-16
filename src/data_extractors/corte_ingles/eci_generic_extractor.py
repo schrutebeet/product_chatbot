@@ -50,7 +50,6 @@ class ECIGenericExtractor:
         done_pages = 1
         first_product_url = self.url + "/" + section + f"/{done_pages}"
         response = requests.get(first_product_url, headers=random.choice(headers))
-        items_per_page = response.json()["data"]["pagination"]["itemsPerPage"]
         time.sleep(random.randint(2, 4))
         logger.info(f'Started data fetching for ECI\'s "{section}" section.')
         while response.status_code == 200:
@@ -58,6 +57,7 @@ class ECIGenericExtractor:
             are_products = r_json["data"]["products"]
             if not are_products:
                 break
+            items_per_page = len(r_json["data"]["products"])
             self._handle_json(r_json, info_dict, items_per_page)
             logger.debug(f"Stored information from page {done_pages}.")
             done_pages += 1
