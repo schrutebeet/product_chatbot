@@ -14,13 +14,13 @@ def main():
     db_utils = UtilsDB()
     db_utils.create_new_models()
 
-    # eci_supermarket = ECISupermarketExtractor("https://www.elcorteingles.es/alimentacion/api/catalog/get-page/supermercado")
-    # eci_supermarket = eci_supermarket.iterate_thru_pages()
-    # db_utils.insert_dict_in_db(eci_supermarket, ECISupermarket)
+    eci_supermarket = ECISupermarketExtractor("https://www.elcorteingles.es/alimentacion/api/catalog/get-page/supermercado")
+    eci_supermarket = eci_supermarket.iterate_thru_pages()
+    db_utils.insert_dict_in_db(eci_supermarket, ECISupermarket)
 
-    # mercadona_supermarket = MercadonaExtractor("https://tienda.mercadona.es/api/categories/")
-    # mercadona_supermarket = mercadona_supermarket.iterate_thru_categories()
-    # db_utils.insert_dict_in_db(mercadona_supermarket, Mercadona)
+    mercadona_supermarket = MercadonaExtractor("https://tienda.mercadona.es/api/categories/")
+    mercadona_supermarket = mercadona_supermarket.iterate_thru_categories()
+    db_utils.insert_dict_in_db(mercadona_supermarket, Mercadona)
 
     data_extractor = ECIGenericExtractor("https://www.elcorteingles.es/api/firefly/vuestore/products_list/")
     for category in data_extractor.categories:
