@@ -95,15 +95,21 @@ class UtilsDB:
         data_dict = self.remove_duplicate_ids(data_dict)
         list_of_dicts = [dict(zip(data_dict, t)) for t in zip(*data_dict.values())]
         batched_list_of_dicts = self._divide_dict_in_batches(list_of_dicts, batch_size)
+        is_data_batched = len(batched_list_of_dicts) > 1
         logger.info(f"Starting data storage in DB for table '{model.__tablename__}'.")
-        for dict_batch in batched_list_of_dicts:
+        for idx, dict_batch in enumerate(batched_list_of_dicts):
             try:
                 self.dbsession.bulk_insert_mappings(model, dict_batch)
                 # Commit the changes to the database for each model
                 self.dbsession.commit()
-                logger.info(
-                    f"Table '{model.__tablename__}' has been successfully stored in DB."
-                )
+                if is_data_batched:
+                    logger.info(
+                    f"Batch number {idx + 1} of table '{model.__tablename__}' has been successfully stored in DB."
+                    )
+                else:
+                    logger.info(
+                        f"Table '{model.__tablename__}' has been successfully stored in DB."
+                    )
             except sqlalchemy.exc.IntegrityError as e:
                 logger.warning(
                     f"Duplicated primary key entries. Skipping. Error log: \n {e}"

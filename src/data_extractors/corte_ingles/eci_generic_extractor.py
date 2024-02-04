@@ -59,7 +59,7 @@ class ECIGenericExtractor:
                 break
             items_per_page = len(r_json["data"]["products"])
             self._handle_json(r_json, info_dict, items_per_page)
-            logger.debug(f"Stored information from page {done_pages}.")
+            logger.debug(f"{section.capitalize()} -- Stored information on page {done_pages}.")
             done_pages += 1
             time.sleep(random.randint(1, 2))
             page_url = self.url + "/" + section + f"/{done_pages}"

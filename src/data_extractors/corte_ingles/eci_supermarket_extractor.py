@@ -43,7 +43,7 @@ class ECISupermarketExtractor:
             soup = BeautifulSoup(response.content, "html.parser")
             products_list = json.loads(soup.find("div")["data-json"])["products"]
             keep_loop = self._iterate_thru_product_list(products_list)
-            logger.debug(f"Stored information from page {done_pages}.")
+            logger.debug(f"ECI Supermarket -- Stored information from page {done_pages}.")
             done_pages += 1
             time.sleep(random.randint(1, 2))
         logger.info("Finished data fetching for ECI's supermarket.")
