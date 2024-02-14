@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "supermarket-data"
+name = "supermarket_data"
 version = "0.1.0"
 description = ""
 authors = ["Ricardo Sans <ricardosans98@gmail.com>"]
