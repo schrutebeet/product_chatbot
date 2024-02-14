@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -22,6 +23,6 @@ class Settings:
 
     POSTGRES_USER: str = credentials["user"]
     POSTGRES_PASSWORD = credentials["password"]
-    POSTGRES_HOST: str = credentials["host"]
+    POSTGRES_HOST: str = os.getenv('DATABASE_HOST')
     POSTGRES_PORT: str = credentials["port"]
     POSTGRES_DATABASE: str = credentials["database"]

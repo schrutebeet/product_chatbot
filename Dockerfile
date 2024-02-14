@@ -8,8 +8,8 @@ RUN mkdir /logs
 # Define environment variable
 ENV LOGS_PATH /logs
 
-# Install poetry to be able to install requirements
-RUN pip install poetry
+# Set host env. variable for accissing DB
+ENV DATABASE_HOST host.docker.internal
 
 # Create app directory 
 RUN mkdir /app
@@ -20,10 +20,17 @@ COPY ./pyproject.toml /app
 # Set the working directory to /app
 WORKDIR /app
 
+# Install poetry to be able to install requirements
+RUN pip install poetry
+
+# Configure Poetry: Disable virtual environments creation
+# as the Docker container itself acts as an isolation mechanism
+RUN poetry config virtualenvs.create true
+
 # Install any needed packages specified in the toml file
 RUN poetry install
 
-# Copy the current directory contents into the container at /stocksapp
+# Copy the current directory contents into the container at /app
 COPY . .
 
 # Run app.py when the container launches
