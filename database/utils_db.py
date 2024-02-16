@@ -20,7 +20,7 @@ class UtilsDB:
 
     def create_specific_model(
         self, class_name: str, model_name: str, schema_name: str, column_data: dict
-    ) -> object:
+    ) -> Any:
         """Create specific model inside specific schema.
 
         Args:
