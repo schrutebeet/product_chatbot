@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set environment variables
-export LOGS_PATH=/home/schrutebeet/Desktop/logs
+export LOGS_PATH=/home/schrutebeet/Desktop/logs/supermarkets
 export DATABASE_HOST=localhost
 
 # Change working directory
