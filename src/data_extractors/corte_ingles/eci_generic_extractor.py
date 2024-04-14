@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 
 import requests
+from fake_useragent import UserAgent
 
 from config.log_config import logger
 from utils.headers import headers
@@ -38,7 +39,8 @@ class ECIGenericExtractor:
 
     def find_categories(self) -> list:
         list_categories = []
-        response = requests.get(self.url, headers=random.choice(headers))
+        header = {"User-agent": UserAgent().random}
+        response = requests.get(self.url, headers=header)
         r_json = response.json()
         categories = r_json['data']['filters']['_menubar'][0]['values']
         for category in categories:
