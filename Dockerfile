@@ -23,6 +23,10 @@ WORKDIR /app
 # Install poetry to be able to install requirements
 RUN pip install poetry
 
+# Configure Poetry: Disable virtual environments creation
+# as the Docker container itself acts as an isolation mechanism
+RUN poetry config virtualenvs.create true
+
 # Install any needed packages specified in the toml file
 RUN poetry install
 
