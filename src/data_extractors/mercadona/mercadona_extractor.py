@@ -2,7 +2,6 @@ import requests
 import time
 import random
 from datetime import datetime
-from fake_useragent import UserAgent
 
 from config.log_config import logger
 from utils.headers import headers
@@ -38,8 +37,7 @@ class MercadonaExtractor:
         self.data_dict = {key: [] for key in self.DICT_KEYS}
 
     def detect_categories(self) -> dict:
-        header = {"User-agent": UserAgent().random}
-        response = requests.get(self.url, headers=header)
+        response = requests.get(self.url, headers=random.choice(headers))
         r_json = response.json()['results']
         for item in r_json:
             self._iterate_over_main_categories(item)

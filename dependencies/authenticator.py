@@ -21,8 +21,10 @@ class Settings:
     PROJECT_NAME: str = "Stocks"
     PROJECT_VERSION: str = "0.0.1"
 
+    BACKUP_COPY_PATH = Path("C:\\Users\\Ricky\\Downloads")
+
     POSTGRES_USER: str = credentials["user"]
     POSTGRES_PASSWORD = credentials["password"]
-    POSTGRES_HOST: str = os.getenv('DATABASE_HOST')
+    POSTGRES_HOST: str = credentials["host"]
     POSTGRES_PORT: str = credentials["port"]
     POSTGRES_DATABASE: str = credentials["database"]

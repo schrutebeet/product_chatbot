@@ -1,3 +1,5 @@
+import os
+import subprocess
 import inspect
 import math
 from typing import Any, List, Union
@@ -9,13 +11,14 @@ import sqlalchemy
 
 from config.log_config import logger
 from database import models
-from database.connection import SessionLocal, engine
+from database.connection import SessionLocal, engine, settings
 from database.models import create_dynamic_model
 
 
 class UtilsDB:
     def __init__(self) -> None:
         self.engine = engine
+        self.db_settings = settings
         self.dbsession = SessionLocal()
 
     def create_specific_model(
@@ -166,3 +169,25 @@ class UtilsDB:
             starting_row += batch_size
             ending_row += batch_size
         return batched_list_of_dicts
+
+    def create_copy_of_db(self) -> None:
+
+        # Path for the dump file
+        dump_path = settings.BACKUP_COPY_PATH
+        if os.name == "nt":     # Windows OS
+            dump_command = [f"PGPASSWORD={self.db_settings.POSTGRES_PASSWORD}",
+                            "pg_dump.exe",
+                            "-U", self.db_settings.POSTGRES_USER,
+                            "-h", self.db_settings.POSTGRES_HOST,
+                            self.db_settings.POSTGRES_DATABASE,
+                            ">",
+                            settings.BACKUP_COPY_PATH]
+        else:                   # Linux
+            dump_command = ["pg_dump",
+                            "-U", self.db_settings.POSTGRES_USER,
+                            "-h", self.db_settings.POSTGRES_HOST,
+                            "-f", dump_path,
+                            self.db_settings.POSTGRES_DATABASE]
+
+        # Execute the dump command
+        subprocess.run(dump_command, check=True)

@@ -6,9 +6,9 @@ from typing import List
 
 import requests
 from bs4 import BeautifulSoup
-from fake_useragent import UserAgent
 
 from config.log_config import logger
+from utils.headers import headers
 
 
 class ECISupermarketExtractor:
@@ -39,8 +39,7 @@ class ECISupermarketExtractor:
         logger.info("Started data fetching for ECI's supermarket.")
         while keep_loop:
             product_url = self.url + f"/{done_pages}"
-            header = {"User-agent": UserAgent().random}
-            response = requests.get(product_url, headers=header)
+            response = requests.get(product_url, headers=random.choice(headers))
             soup = BeautifulSoup(response.content, "html.parser")
             products_list = json.loads(soup.find("div")["data-json"])["products"]
             keep_loop = self._iterate_thru_product_list(products_list)

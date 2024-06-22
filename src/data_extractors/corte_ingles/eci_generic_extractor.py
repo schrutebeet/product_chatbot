@@ -3,7 +3,6 @@ import time
 from datetime import datetime
 
 import requests
-from fake_useragent import UserAgent
 
 from config.log_config import logger
 from utils.headers import headers
@@ -39,8 +38,7 @@ class ECIGenericExtractor:
 
     def find_categories(self) -> list:
         list_categories = []
-        header = {"User-agent": UserAgent().random}
-        response = requests.get(self.url, headers=header)
+        response = requests.get(self.url, headers=random.choice(headers))
         r_json = response.json()
         categories = r_json['data']['filters']['_menubar'][0]['values']
         for category in categories:
@@ -90,6 +88,6 @@ class ECIGenericExtractor:
                 info_dict["original_price"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("o_price", info_dict["final_price"][-1]))
                 info_dict["discount_percent"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("discount_percent"))
                 info_dict["currency"].append(r_json["data"]["paginatedDatalayer"]["products"][item]["price"].get("currency"))
-                info_dict["provider"].append(r_json["data"]["products"][item]["provider"].get("name"))
+                info_dict["provider"].append(r_json["data"]["products"][item]["provider"][0].get("name"))
                 info_dict["link"].append(r_json["data"]["products"][item].get("_base_url"))
                 info_dict["image_link"].append(r_json["data"]["products"][item]["image"].get("default_source"))

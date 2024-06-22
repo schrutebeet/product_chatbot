@@ -1,6 +1,9 @@
 import copy
+import subprocess
+from datetime import datetime
 
 from database.models import ECISupermarket, Mercadona
+from database.connection import settings, DATABASE_URL
 from database.utils_db import UtilsDB
 from src.data_extractors.corte_ingles.eci_generic_extractor import ECIGenericExtractor
 from src.data_extractors.corte_ingles.eci_supermarket_extractor import ECISupermarketExtractor
@@ -30,10 +33,13 @@ def main():
         email_info = {'recipient_name': 'Ricardo', 'product_category': category, 'row_count': len(category_dict['id'])}
         email.send_success_eci(email_info)
 
+    # if datetime.now().strftime('%A') == "Monday":
+    #     db_utils.create_copy_of_db()
+
+
 # CONSUM
 # https://tienda.consum.es/api/rest/V1.0/shopping/category/menu
 # https://tienda.consum.es/api/rest/V1.0/catalog/product?page=1&limit=20&offset=0&orderById=5&showRecommendations=false&categories=1690
-
 
 
 if __name__ == "__main__":
